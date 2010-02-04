@@ -102,6 +102,7 @@ typedef struct MonitorControl {
     QObject *id;
     int print_enabled;
     JSONMessageParser parser;
+    int command_mode;
 } MonitorControl;
 
 struct Monitor {
@@ -373,6 +374,15 @@ void monitor_protocol_event(MonitorEvent event, QObject *data)
         }
     }
     QDECREF(qmp);
+}
+
+static void do_qmp_capabilities(Monitor *mon, const QDict *params,
+                                QObject **ret_data)
+{
+    /* Will setup QMP capabilities in the future */
+    if (monitor_ctrl_mode(mon)) {
+        mon->mc->command_mode = 1;
+    }
 }
 
 static int compare_cmd(const char *name, const char *list)
@@ -4235,6 +4245,7 @@ static void monitor_control_event(void *opaque, int event)
         QObject *data;
         Monitor *mon = opaque;
 
+        mon->mc->command_mode = 0;
         json_message_parser_init(&mon->mc->parser, handle_qmp_command);
 
         data = qobject_from_jsonf("{ 'QMP': { 'capabilities': [] } }");

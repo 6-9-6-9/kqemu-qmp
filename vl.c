@@ -3329,6 +3329,8 @@ static void do_vm_stop(int reason)
         vm_state_notify(0, reason);
         monitor_protocol_event(QEVENT_STOP, NULL);
     }
+
+    monitor_protocol_event(QEVENT_RESET, NULL);
 }
 
 void qemu_register_reset(QEMUResetHandler *func, void *opaque)
@@ -4204,7 +4206,6 @@ static void main_loop(void)
                 break;
         }
         if (qemu_reset_requested()) {
-            monitor_protocol_event(QEVENT_RESET, NULL);
             pause_all_vcpus();
             qemu_system_reset();
             resume_all_vcpus();

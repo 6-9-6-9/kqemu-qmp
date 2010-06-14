@@ -32,6 +32,44 @@ hxtotexi()
             test $flag -eq 1 && echo "$str"
             ;;
         esac
+        line=$((line+1))
+    done
+}
+
+hxtoqmp()
+{
+    IFS=
+    flag=0
+    line=1
+    while read -r str; do
+        case "$str" in
+            HXCOMM*)
+            ;;
+            SQMP*)
+            if test $flag -eq 1 ; then
+                echo "line $line: syntax error: expected EQMP, found $str" >&2
+                exit 1
+            fi
+            flag=1
+            ;;
+            EQMP*)
+            if test $flag -ne 1 ; then
+                echo "line $line: syntax error: expected SQMP, found $str" >&2
+                exit 1
+            fi
+            flag=0
+            ;;
+            STEXI*|ETEXI*)
+            if test $flag -eq 1 ; then
+                echo "line $line: syntax error: expected EQMP, found $str" >&2
+                exit 1
+            fi
+            ;;
+            *)
+            test $flag -eq 1 && echo "$str"
+            ;;
+        esac
+        line=$((line+1))
     done
 }
 

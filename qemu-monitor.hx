@@ -1078,6 +1078,20 @@ STEXI
 Enable the specified QMP capabilities
 ETEXI
 
+    {
+        .name       = "human-monitor-command",
+        .args_type  = "command-line:s,cpu-index:i?",
+        .params     = "",
+        .help       = "",
+        .user_print = monitor_user_noop,
+        .mhandler.cmd_new = do_hmp_passthrough,
+    },
+
+STEXI
+@item human-monitor-command
+Execute a Human Monitor command.
+ETEXI
+
 STEXI
 @end table
 ETEXI

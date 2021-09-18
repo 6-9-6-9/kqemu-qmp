@@ -1043,11 +1043,15 @@ target_phys_addr_t cpu_get_phys_page_debug(CPUState *env, target_ulong addr)
 
 /* XXX: This value should match the one returned by CPUID
  * and in exec.c */
+#if defined(CONFIG_KQEMU)
+#define PHYS_ADDR_MASK 0xfffff000LL
+#else
 # if defined(TARGET_X86_64)
 # define PHYS_ADDR_MASK 0xfffffff000LL
 # else
 # define PHYS_ADDR_MASK 0xffffff000LL
 # endif
+#endif
 
 /* return value:
    -1 = cannot handle fault
@@ -1818,13 +1822,21 @@ void cpu_x86_cpuid(CPUX86State *env, uint32_t index, uint32_t count,
 /* XXX: This value must match the one used in the MMU code. */ 
         if (env->cpuid_ext2_features & CPUID_EXT2_LM) {
             /* 64 bit processor */
+#if defined(CONFIG_KQEMU)
+            *eax = 0x00003020;	/* 48 bits virtual, 32 bits physical */
+#else
 /* XXX: The physical address space is limited to 42 bits in exec.c. */
             *eax = 0x00003028;	/* 48 bits virtual, 40 bits physical */
+#endif
         } else {
+#if defined(CONFIG_KQEMU)
+            *eax = 0x00000020;	/* 32 bits physical */
+#else
             if (env->cpuid_features & CPUID_PSE36)
                 *eax = 0x00000024; /* 36 bits physical */
             else
                 *eax = 0x00000020; /* 32 bits physical */
+#endif
         }
         *ebx = 0;
         *ecx = 0;
@@ -1902,6 +1914,9 @@ CPUX86State *cpu_x86_init(const char *cpu_model)
         return NULL;
     }
     mce_init(env);
+#ifdef CONFIG_KQEMU
+    kqemu_init(env);
+#endif
 
     qemu_init_vcpu(env);
 

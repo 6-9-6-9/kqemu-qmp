@@ -2432,7 +2432,7 @@ case "$target_arch2" in
     fi
     if test $kqemu = "yes" -a "$target_softmmu" = "yes"
     then
-      echo "CONFIG_KQEMU=y" >> $config_mak
+      echo "CONFIG_KQEMU=y" >> $config_target_mak
     fi
 esac
 case "$target_arch2" in

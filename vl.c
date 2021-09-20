@@ -1751,6 +1751,9 @@ static void configure_rtc(QemuOpts *opts)
 }
 
 #ifdef _WIN32
+static void socket_cleanup(void);
+static int socket_init(void);
+
 static void socket_cleanup(void)
 {
     WSACleanup();

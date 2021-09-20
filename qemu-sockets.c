@@ -116,6 +116,25 @@ static void inet_print_addrinfo(const char *tag, struct addrinfo *res)
     }
 }
 
+
+static int socket_init_2(void);
+static void socket_cleanup_2(void);
+
+static int socket_init_2(void)
+{
+    WSADATA Data;
+    int ec;
+
+    ec = WSAStartup(MAKEWORD(2,2), &Data);
+    atexit(socket_cleanup_2);
+    return ec;
+}
+
+static void socket_cleanup_2(void)
+{
+    WSACleanup();
+}
+
 int inet_listen_opts(QemuOpts *opts, int port_offset)
 {
     struct addrinfo ai,*res,*e;
@@ -147,6 +166,7 @@ int inet_listen_opts(QemuOpts *opts, int port_offset)
     /* lookup */
     if (port_offset)
         snprintf(port, sizeof(port), "%d", atoi(port) + port_offset);
+    socket_init_2();
     rc = getaddrinfo(strlen(addr) ? addr : NULL, port, &ai, &res);
     if (rc != 0) {
         fprintf(stderr,"getaddrinfo(%s,%s): %s\n", addr, port,

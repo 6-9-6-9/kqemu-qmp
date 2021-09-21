@@ -406,7 +406,7 @@ static int do_hmp_passthrough(Monitor *mon, const QDict *params,
         ret = mon_set_cpu(qdict_get_int(params, "cpu-index"));
         if (ret < 0) {
             cur_mon = old_mon;
-            qerror_report(QERR_INVALID_PARAMETER_VALUE, "cpu-index", "a CPU number");
+            //qerror_report(QERR_INVALID_PARAMETER_VALUE, "cpu-index", "a CPU number");
             goto out;
         }
     }

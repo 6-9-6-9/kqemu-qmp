@@ -1082,7 +1082,7 @@ ETEXI
         .name       = "human-monitor-command",
         .args_type  = "command-line:s,cpu-index:i?",
         .params     = "",
-        .help       = "",
+        .help       = "execute a Human Monitor command from QMP",
         .user_print = monitor_user_noop,
         .mhandler.cmd_new = do_hmp_passthrough,
     },

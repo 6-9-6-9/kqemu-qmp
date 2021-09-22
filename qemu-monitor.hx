@@ -714,15 +714,15 @@ ETEXI
 #if defined(TARGET_I386)
     {
         .name       = "nmi",
-        .args_type  = "cpu_index:i",
-        .params     = "cpu",
-        .help       = "inject an NMI on the given CPU",
-        .mhandler.cmd = do_inject_nmi,
+        .args_type  = "",
+        .params     = "",
+        .help       = "inject an NMI on all guest's CPUs",
+        .mhandler.cmd_new = do_inject_nmi,
     },
 #endif
 STEXI
 @item nmi @var{cpu}
-Inject an NMI on the given CPU (x86 only).
+Inject an NMI on all guest's CPUs (x86 only).
 ETEXI
 
     {

@@ -2113,13 +2113,9 @@ static void do_wav_capture(Monitor *mon, const QDict *qdict)
 static void do_inject_nmi(Monitor *mon, const QDict *qdict)
 {
     CPUState *env;
-    int cpu_index = qdict_get_int(qdict, "cpu_index");
 
     for (env = first_cpu; env != NULL; env = env->next_cpu)
-        if (env->cpu_index == cpu_index) {
-            cpu_interrupt(env, CPU_INTERRUPT_NMI);
-            break;
-        }
+        cpu_interrupt(env, CPU_INTERRUPT_NMI);
 }
 #endif
 

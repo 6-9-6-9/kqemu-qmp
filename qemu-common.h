@@ -32,6 +32,9 @@
 #include <sys/stat.h>
 #include <assert.h>
 
+/* Multiple source files use this macro */
+#define BIT(n) (1 << (n))
+
 #ifndef O_LARGEFILE
 #define O_LARGEFILE 0
 #endif

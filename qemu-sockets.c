@@ -116,6 +116,7 @@ static void inet_print_addrinfo(const char *tag, struct addrinfo *res)
     }
 }
 
+#ifdef _WIN32
 
 static int socket_init_2(void);
 static void socket_cleanup_2(void);
@@ -134,6 +135,8 @@ static void socket_cleanup_2(void)
 {
     WSACleanup();
 }
+
+#endif /* _WIN32 */
 
 int inet_listen_opts(QemuOpts *opts, int port_offset)
 {
@@ -166,7 +169,11 @@ int inet_listen_opts(QemuOpts *opts, int port_offset)
     /* lookup */
     if (port_offset)
         snprintf(port, sizeof(port), "%d", atoi(port) + port_offset);
+
+#ifdef _WIN32
     socket_init_2();
+#endif
+
     rc = getaddrinfo(strlen(addr) ? addr : NULL, port, &ai, &res);
     if (rc != 0) {
         fprintf(stderr,"getaddrinfo(%s,%s): %s\n", addr, port,

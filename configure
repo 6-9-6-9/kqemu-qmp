@@ -1721,7 +1721,7 @@ fi
 cat > $TMPC <<EOF
 #include <signal.h>
 #include <time.h>
-int main(void) { clockid_t id; return clock_gettime(id, NULL); }
+int main(void) { clockid_t id; return timer_create(id, NULL, NULL); }
 EOF
 
 if compile_prog "" "" ; then
@@ -1805,6 +1805,20 @@ int main(void) { return fdatasync(0); }
 EOF
 if compile_prog "" "" ; then
     fdatasync=yes
+fi
+
+##########################################
+# check for sysmacros.h
+
+have_sysmacros=no
+cat > $TMPC << EOF
+#include <sys/sysmacros.h>
+int main(void) {
+    return makedev(0, 0);
+}
+EOF
+if compile_prog "" "" ; then
+    have_sysmacros=yes
 fi
 
 # End of CC checks
@@ -2141,6 +2155,10 @@ fi
 # XXX: suppress that
 if [ "$bsd" = "yes" ] ; then
   echo "CONFIG_BSD=y" >> $config_host_mak
+fi
+
+if test "$have_sysmacros" = "yes" ; then
+  echo "CONFIG_SYSMACROS=y" >> $config_host_mak
 fi
 
 echo "CONFIG_UNAME_RELEASE=\"$uname_release\"" >> $config_host_mak

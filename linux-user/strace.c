@@ -9,7 +9,12 @@
 #include <sys/mount.h>
 #include <sys/mman.h>
 #include <unistd.h>
+
 #include "qemu.h"
+
+#ifdef CONFIG_SYSMACROS
+#include <sys/sysmacros.h>
+#endif
 
 int do_strace=0;
 

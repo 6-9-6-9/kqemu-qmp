@@ -190,7 +190,10 @@ static type name (type1 arg1,type2 arg2,type3 arg3,type4 arg4,type5 arg5,	\
 #endif
 
 #ifdef __NR_gettid
+/* Newer glibc gives us gettid() already */
+#if !defined(__GLIBC_PREREQ) || !__GLIBC_PREREQ(2, 30)
 _syscall0(int, gettid)
+#endif /* glibc >=2.30 */
 #else
 /* This is a replacement for the host gettid() and must return a host
    errno. */
@@ -4492,10 +4495,12 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
 #ifdef TARGET_NR_stime /* not on alpha */
     case TARGET_NR_stime:
         {
-            time_t host_time;
-            if (get_user_sal(host_time, arg1))
+            struct timespec ts;
+            ts.tv_nsec = 0;
+            if (get_user_sal(ts.tv_sec, arg1)) {
                 goto efault;
-            ret = get_errno(stime(&host_time));
+            }
+            ret = get_errno(clock_settime(CLOCK_REALTIME, &ts));
         }
         break;
 #endif
